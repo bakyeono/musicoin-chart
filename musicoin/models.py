@@ -8,7 +8,7 @@ class MusicCopyright(models.Model):
     number = models.IntegerField(verbose_name='번호', db_index=True)
     title = models.CharField(verbose_name='제목', max_length=200, db_index=True)
     artist = models.CharField(verbose_name='음악가', max_length=200, db_index=True)
-    stock_income_rate = models.FloatField(verbose_name='최저가 기준 주식 1주당 예상 수익', db_index=True)
+    stock_income_rate = models.FloatField(verbose_name='주당 수익률', db_index=True)
     last_12_months_income = models.IntegerField(verbose_name='지난 12개월 수익', default=0)
     stock_lowest_price = models.IntegerField(verbose_name='주식 최저가', default=0)
     stock_sales = JSONField(verbose_name='판매중 주식', default=dict)
