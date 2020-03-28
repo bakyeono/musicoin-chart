@@ -16,3 +16,6 @@ class MusicCopyright(models.Model):
     class Meta:
         verbose_name = '음악 저작권'
         verbose_name_plural = '음악 저작권'
+
+    def __str__(self):
+        return f'음악 저작권({self.number}: {self.title})'

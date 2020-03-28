@@ -1,6 +1,4 @@
-from datetime import date
 from operator import itemgetter
-import json
 import requests
 import time
 
@@ -86,7 +84,7 @@ def sort_song_infos(song_infos, key='income_rate', reverse=True):
 def save_song_infos(song_infos):
     for song_info in song_infos:
         title_info = song_info.get('title_info', '')
-        stock_income_rate = song_info.get('stock_income_rate', 0.0)
+        stock_income_rate = song_info.get('income_rate', 0.0)
         stock_lowest_price = song_info.get('lowest_price', 0)
         last_12_months_income = song_info.get('last_year_income', 0)
         stock_sales = song_info.get('buy_options', [])
@@ -103,7 +101,7 @@ def save_song_infos(song_infos):
         )
 
 
-if __name__ == '__main__':
-    song_infos = crawl_song_documents(start_song_id=25, end_song_id=713)
+def crawl_and_update_song_infos(start_song_id=25, end_song_id=713):
+    song_infos = crawl_song_documents(start_song_id, end_song_id)
     save_song_infos(song_infos)
 
