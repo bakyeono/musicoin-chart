@@ -98,8 +98,8 @@ def find_song_documents_between(start_song_id, end_song_id, exclude_ids=None):
 def find_song_documents(exec=None, error_handler=None):
     page_number = 1
     song_numbers = parse_song_list_document(fetch_song_list(page_number))
-    time.sleep(0.2)
     while song_numbers:
+        time.sleep(0.2)
         for song_number in song_numbers:
             try:
                 song_document = fetch_song_document(song_number)
