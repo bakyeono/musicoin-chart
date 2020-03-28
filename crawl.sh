@@ -1,2 +1,4 @@
 #!/bin/sh
-/usr/bin/env python manage.py crawl
+workon musicoin
+python manage.py crawl
+deactivate
