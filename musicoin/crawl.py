@@ -89,6 +89,7 @@ def save_song_infos(song_infos):
         file.write(json.dumps(song_infos))
 
 
-song_infos = sort_song_infos(crawl_song_documents(start_song_id=25, end_song_id=713))
-save_song_infos(song_infos)
+if __name__ == '__main__':
+    song_infos = sort_song_infos(crawl_song_documents(start_song_id=25, end_song_id=713))
+    save_song_infos(song_infos)
 
