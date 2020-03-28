@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class MusicoinConfig(AppConfig):
-    name = 'musicoin'
+    name = '뮤지코인'

@@ -6,6 +6,7 @@ import time
 
 from bs4 import BeautifulSoup
 
+from musicoin.models import MusicCopyright
 
 url_template = 'https://www.musicoin.co/song/{song_id}'
 
@@ -66,16 +67,14 @@ def crawl_song_documents(start_song_id, end_song_id, exclude_ids=None):
     song_infos = []
     for song_id in range(start_song_id, end_song_id):
         if song_id in exclude_ids:
-            pring('skip:', song_id)
             continue
         try:
             song_document = fetch_song_document(song_id)
             song_info = parse_song_document(song_document)
             song_info.update({'song_id': song_id})
             song_infos.append(song_info)
-            print(song_info)
         except Exception as e:
-            print('error:', song_id, type(e), e)
+            pass
         time.sleep(0.3)
     return song_infos
 
@@ -85,11 +84,26 @@ def sort_song_infos(song_infos, key='income_rate', reverse=True):
 
 
 def save_song_infos(song_infos):
-    with open(f'musicoin-{date.today()}.json', 'w') as file:
-        file.write(json.dumps(song_infos))
+    for song_info in song_infos:
+        title_info = song_info.get('title_info', '')
+        stock_income_rate = song_info.get('stock_income_rate', 0.0)
+        stock_lowest_price = song_info.get('lowest_price', 0)
+        last_12_months_income = song_info.get('last_year_income', 0)
+        stock_sales = song_info.get('buy_options', [])
+        MusicCopyright.objects.update_or_create(
+            number=song_info['song_id'],
+            defaults={
+                'title': title_info and title_info.get('title'),
+                'artist': title_info and title_info.get('author'),
+                'stock_income_rate': stock_income_rate,
+                'stock_lowest_price': stock_lowest_price,
+                'last_12_months_income': last_12_months_income,
+                'stock_sales': stock_sales,
+            }
+        )
 
 
 if __name__ == '__main__':
-    song_infos = sort_song_infos(crawl_song_documents(start_song_id=25, end_song_id=713))
+    song_infos = crawl_song_documents(start_song_id=25, end_song_id=713)
     save_song_infos(song_infos)
 
