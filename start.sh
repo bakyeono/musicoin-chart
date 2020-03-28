@@ -1,5 +1,4 @@
-#!/bin/sh
 source venv.sh
 workon musicoin
-python manage.py crawl
+uwsgi --ini uwsgi.ini
 deactivate
