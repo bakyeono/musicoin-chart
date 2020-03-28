@@ -135,6 +135,3 @@ def update_song_info(song_info):
     )
 
 
-def find_and_update_song_infos():
-    find_song_documents(update_song_info)
-
