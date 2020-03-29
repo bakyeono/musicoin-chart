@@ -20,7 +20,7 @@ def fetch_song_list(page_number):
 
 def parse_song_list_document(song_list_document):
     soup = BeautifulSoup(song_list_document, 'html.parser')
-    song_list_tag = soup.find('ul', attrs={'class': 'user_buy'})
+    song_list_tag = soup.find('ul', {'class': 'user_buy'})
     song_numbers = []
     if song_list_tag:
         for anchor in song_list_tag.find_all('a'):
@@ -37,15 +37,15 @@ def fetch_song_document(song_id):
 
 
 def extract_title_info(soup):
-    title_info_tag = soup.find('div', attrs={'class': 'thumb_wrap'})
+    title_info_tag = soup.find('div', {'class': 'thumb_wrap'})
     return {
         'title': title_info_tag.find('strong').text,
-        'author': title_info_tag.find('em', attrs={'class': 'name'}).text,
+        'author': title_info_tag.find('em', {'class': 'name'}).text,
     }
 
 
 def extract_buy_options(soup):
-    buy_option_tags = soup.find('li', attrs={'class': 'u_buy_option'}).find_all('div', attrs={'class': 'option'})
+    buy_option_tags = soup.find('li', {'class': 'u_buy_option'}).find_all('div', {'class': 'option'})
     buy_options = []
     for buy_option_tag in buy_option_tags:
         items = buy_option_tag.find_all('li')
@@ -56,7 +56,7 @@ def extract_buy_options(soup):
 
 
 def extract_last_year_income(soup):
-    income_info_tags = soup.find('ul', attrs={'class': 'old_money'}).find_all('li')
+    income_info_tags = soup.find('ul', {'class': 'old_money'}).find_all('li')
     return digits_to_number(income_info_tags[0].text)
 
 
