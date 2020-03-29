@@ -1,3 +1,5 @@
+import json
+
 import requests
 import time
 
@@ -42,6 +44,21 @@ def extract_title_info(soup):
         'title': title_info_tag.find('strong').text,
         'author': title_info_tag.find('em', {'class': 'name'}).text,
     }
+
+
+def extract_income_history(soup):
+    script = soup.find('div', {'id': 'page_song'}).find('script', {'type': 'text/javascript'}).text
+    try:
+        line = next(filter(lambda line: line.startswith('arr_amt_royalty_ym'), script.split('\n')))
+    except StopIteration:
+        return []
+    json_data = line[line.find('{'): line.find(';')]
+    yearly_incomes = sorted(json.loads(json_data).items())
+    incomes = []
+    for year, monthly_incomes in yearly_incomes:
+        for month, income in sorted(monthly_incomes.items()):
+            incomes.append(((int(year), int(month)), int(income)))
+    return incomes
 
 
 def extract_buy_options(soup):
