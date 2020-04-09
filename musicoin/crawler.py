@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 
 from musicoin.models import MusicCopyright
 
-list_url = 'https://www.musicoin.co/auctions?tab=market&keyword=&sortorder=&page={page_number}'
-detail_url = 'https://www.musicoin.co/song/{song_id}'
+list_url = 'https://www.musicow.com/auctions?tab=market&keyword=&sortorder=&page={page_number}'
+detail_url = 'https://www.musicow.com/song/{song_id}'
 
 
 def digits_to_number(text):
