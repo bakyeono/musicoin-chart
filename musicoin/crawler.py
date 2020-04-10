@@ -38,18 +38,37 @@ def fetch_song_document(song_id):
     return requests.get(url).text
 
 
+def fetch_market_info(song_id):
+    url = 'https://www.musicow.com/api/market'
+    data = {'song_id': song_id}
+    headers = {'referer': 'https://www.musicow.com/song/91'}
+    response = requests.post(url, data=data, headers=headers)
+    result = response.json()
+    sell_list = result['market_order']['type'].get('1', [])
+    buy_list = result['market_order']['type'].get('2', [])
+    return sell_list, buy_list
+
+
 def extract_title_info(soup):
-    title_info_tag = soup.find('div', {'class': 'thumb_wrap'})
+    header_tag = soup.find('div', {'class': 'song_header'})
+    title_info_tag = header_tag.find('div', {'class': 'information'})
     return {
-        'title': title_info_tag.find('strong').text,
-        'author': title_info_tag.find('em', {'class': 'name'}).text,
+        'title': title_info_tag.find('strong', {'class': 'title'}).text,
+        'author': title_info_tag.find('em', {'class': 'artist'}).text,
     }
 
 
+def fetch_income_history(song_id):
+    url = 'https://www.musicow.com/song/{song_id}?tab=info'.format(song_id=song_id)
+    html_doc = requests.get(url).text
+    soup = BeautifulSoup(html_doc, 'html.parser')
+    return soup
+
+
 def extract_income_history(soup):
-    script = soup.find('div', {'id': 'page_song'}).find('script', {'type': 'text/javascript'}).text
+    script = soup.find('div', {'class': 'div_half'}).find('script', {'type': 'text/javascript'}).text
     try:
-        line = next(filter(lambda line: line.startswith('arr_amt_royalty_ym'), script.split('\n')))
+        line = next(filter(lambda line: line.strip().startswith('arr_amt_royalty_ym'), script.split('\n')))
     except StopIteration:
         return []
     json_data = line[line.find('{'): line.find(';')]
@@ -61,55 +80,12 @@ def extract_income_history(soup):
     return incomes
 
 
-def extract_buy_options(soup):
-    buy_option_tags = soup.find('li', {'class': 'u_buy_option'}).find_all('div', {'class': 'option'})
-    buy_options = []
-    for buy_option_tag in buy_option_tags:
-        items = buy_option_tag.find_all('li')
-        stock_price = digits_to_number(items[0].text)
-        num_stocks = digits_to_number(items[1].text)
-        buy_options.append({'stock_price': stock_price, 'num_stocks': num_stocks})
-    return buy_options
-
-
-def extract_last_year_income(soup):
-    income_info_tags = soup.find('ul', {'class': 'old_money'}).find_all('li')
-    return digits_to_number(income_info_tags[0].text)
-
-
 def parse_song_document(song_document):
     soup = BeautifulSoup(song_document, 'html.parser')
     title_info = extract_title_info(soup)
-    buy_options = extract_buy_options(soup)
-    last_year_income = extract_last_year_income(soup)
-    lowest_price = buy_options[-1]['stock_price'] if buy_options else 0
-    income_rate = last_year_income / lowest_price if lowest_price else 0
     return {
         'title_info': title_info,
-        'buy_options': buy_options,
-        'last_year_income': last_year_income,
-        'lowest_price': lowest_price,
-        'income_rate': income_rate,
     }
-
-
-def find_song_documents_between(start_song_id, end_song_id, exclude_ids=None):
-    if exclude_ids is None:
-        exclude_ids = set()
-
-    song_infos = []
-    for song_id in range(start_song_id, end_song_id):
-        if song_id in exclude_ids:
-            continue
-        try:
-            song_document = fetch_song_document(song_id)
-            song_info = parse_song_document(song_document)
-            song_info.update({'song_id': song_id})
-            song_infos.append(song_info)
-        except Exception as e:
-            pass
-        time.sleep(0.2)
-    return song_infos
 
 
 def find_song_documents(exec=None, error_handler=None):
@@ -121,7 +97,19 @@ def find_song_documents(exec=None, error_handler=None):
             try:
                 song_document = fetch_song_document(song_number)
                 song_info = parse_song_document(song_document)
+                sell_list, buy_list = fetch_market_info(song_number)
+                try:
+                    lowest_price = sorted(map(int, sell_list.keys()))[0]
+                except IndexError:
+                    lowest_price = 0
+                income_history_doc = fetch_income_history(song_number)
+                income_history = extract_income_history(income_history_doc)
+                last_year_income = sum(amount for (time, amount) in income_history[-12:])
+                income_rate = last_year_income / lowest_price if lowest_price else 0
+                song_info.update({'lowest_price': lowest_price})
                 song_info.update({'song_id': song_number})
+                song_info.update({'last_year_income': last_year_income})
+                song_info.update({'income_rate': income_rate})
             except Exception as e:
                 if getattr(error_handler, '__call__'):
                     error_handler(e)
@@ -147,7 +135,7 @@ def update_song_info(song_info):
             'stock_income_rate': stock_income_rate,
             'stock_lowest_price': stock_lowest_price,
             'last_12_months_income': last_12_months_income,
-            'stock_sales': stock_sales,
+            'stock_sales': [],
         }
     )
 
