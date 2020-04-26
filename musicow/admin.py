@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from musicoin.models import MusicCopyright
+from musicow.models import MusicCopyright
 
 
 @admin.register(MusicCopyright)

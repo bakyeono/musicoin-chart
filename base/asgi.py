@@ -1,5 +1,5 @@
 """
-ASGI config for musicoin project.
+ASGI config for musicow project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 

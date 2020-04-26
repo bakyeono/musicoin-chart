@@ -5,7 +5,7 @@ import time
 
 from bs4 import BeautifulSoup
 
-from musicoin.models import MusicCopyright
+from musicow.models import MusicCopyright
 
 list_url = 'https://www.musicow.com/auctions?tab=market&keyword=&sortorder=&page={page_number}'
 detail_url = 'https://www.musicow.com/song/{song_id}'

@@ -1,5 +1,5 @@
 #!/bin/bash
 source venv.sh
-workon musicoin
+workon musicow
 uwsgi --ini uwsgi.ini
 deactivate

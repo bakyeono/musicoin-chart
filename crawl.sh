@@ -1,7 +1,7 @@
 #!/bin/bash
-WORK_PATH=/home/bakyeono/musicoin
+WORK_PATH=/home/bakyeono/musicow
 cd $WORK_PATH
 source venv.sh
-workon musicoin
+workon musicow
 python manage.py crawl
 deactivate

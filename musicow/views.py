@@ -3,11 +3,11 @@ from datetime import timedelta
 from django.utils import timezone
 from django.views.generic import TemplateView
 
-from musicoin.models import MusicCopyright
+from musicow.models import MusicCopyright
 
 
 class MusicCopyrightListView(TemplateView):
-    template_name = 'musicoin/music_copyright_list.html'
+    template_name = 'musicow/music_copyright_list.html'
 
     def get_context_data(self, **kwargs):
         context_data = super().get_context_data(**kwargs)

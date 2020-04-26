@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from musicoin.tasks import find_and_update_music_copyrights
+from musicow.tasks import find_and_update_music_copyrights
 
 
 class Command(BaseCommand):

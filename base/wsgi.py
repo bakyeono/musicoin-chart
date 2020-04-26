@@ -1,5 +1,5 @@
 """
-WSGI config for musicoin project.
+WSGI config for musicow project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 

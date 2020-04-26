@@ -1,4 +1,4 @@
-"""musicoin URL Configuration
+"""musicow URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.0/topics/http/urls/
@@ -19,5 +19,5 @@ from django.urls import include
 
 urlpatterns = [
     path('__admin/', admin.site.urls),
-    path('', include('musicoin.urls')),
+    path('', include('musicow.urls')),
 ]
