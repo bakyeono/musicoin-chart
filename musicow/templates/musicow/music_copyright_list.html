@@ -66,7 +66,7 @@ table thead th {
         <tbody>
         {% for music in musics %}
           <tr>
-            <td><a href="https://www.musicow.co/song/{{ music.number }}" target="_blank">{{ music.title }}</a></td>
+            <td><a href="https://www.musicow.com/song/{{ music.number }}" target="_blank">{{ music.title }}</a></td>
             <td>{{ music.artist }}</td>
             <td class="right">{{ music.last_12_months_income|intcomma }} 원</td>
             <td class="right">{{ music.stock_lowest_price|intcomma }} 원</td>
