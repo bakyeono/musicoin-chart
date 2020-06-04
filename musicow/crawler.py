@@ -39,9 +39,9 @@ def fetch_song_document(song_id):
 
 
 def fetch_market_info(song_id):
-    url = 'https://www.musicow.com/api/market'
+    url = 'https://www.musicow.com/api/market'  # API 변경되었음
     data = {'song_id': song_id}
-    headers = {'referer': 'https://www.musicow.com/song/91'}
+    headers = {'referer': f'https://www.musicow.com/song/{song_id}'}
     response = requests.post(url, data=data, headers=headers)
     result = response.json()
     sell_list = result['market_order']['type'].get('1', [])
